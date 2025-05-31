@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio de Vídeos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="language-toggle">
+                    <button id="pt-btn" class="active">PT</button>
+                    <button id="en-btn">EN</button>
+                </div>
+                <div class="theme-toggle">
+                    <button id="theme-toggle-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1 class="lang-pt">Portfólio de Vídeos Profissionais</h1>
+                <h1 class="lang-en">Professional Video Portfolio</h1>
+            </div>
+        </section>
+
+        <section class="categories">
+            <div class="container">
+                <h2 class="lang-pt">Categorias</h2>
+                <h2 class="lang-en">Categories</h2>
+                <div class="category-filters">
+                    <button class="category-btn active" data-category="all">
+                        <span class="lang-pt">Todos</span>
+                        <span class="lang-en">All</span>
+                    </button>
+                    <button class="category-btn" data-category="commercial">
+                        <span class="lang-pt">Comerciais</span>
+                        <span class="lang-en">Commercials</span>
+                    </button>
+                    <button class="category-btn" data-category="documentary">
+                        <span class="lang-pt">Documentários</span>
+                        <span class="lang-en">Documentaries</span>
+                    </button>
+                    <button class="category-btn" data-category="music">
+                        <span class="lang-pt">Videoclipes</span>
+                        <span class="lang-en">Music Videos</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="videos">
+            <div class="container">
+                <div class="video-grid" id="video-grid">
+                    <!-- Videos will be loaded dynamically via JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025</p>
+            <div class="social-links">
+                <a href="https://www.instagram.com/ojaaopedro/" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@jgwsh" target="_blank"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div class="modal" id="video-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="video-container" id="modal-video-container"></div>
+            <div class="video-info">
+                <h3 id="modal-video-title"></h3>
+                <p id="modal-video-description"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
