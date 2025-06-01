@@ -23,7 +23,7 @@ server.post('/api/videos',
   body('url_video').notEmpty().withMessage('URL do vídeo é obrigatória').isString().withMessage('URL do vídeo deve ser uma string').isURL().withMessage('URL do vídeo deve ser válida'),
   body('url_miniatura').notEmpty().withMessage('URL da miniatura é obrigatória').isString().withMessage('URL da miniatura deve ser uma string').isURL().withMessage('URL da miniatura deve ser válida'),
   body('categoriaId').notEmpty().withMessage('Categoria é obrigatória').isString().withMessage('Categoria deve ser uma string'),
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -33,10 +33,13 @@ server.post('/api/videos',
       });
     }
 
-    db.collection('videos').add(req.body)
+    const v = await db.collection('videos').add(req.body)
 
     res.status(201).json({
-      mensagem: "Vídeo adicionado com sucesso!"
+      mensagem: "Vídeo adicionado com sucesso!",
+      dados: {
+        id: v.id
+      }
     });
   }
 );
@@ -115,6 +118,132 @@ server.delete('/api/videos/:id',
     } catch (error) {
       res.status(500).json({
         mensagem: "Erro ao remover vídeo",
+        erro: error.message
+      });
+    }
+  }
+);
+
+server.get('/api/categorias', async (req, res) => {
+  try {
+    const categorias = await db.collection('categorias').get();
+
+    res.status(200).json({
+      mensagem: "Lista de categorias",
+      dados: categorias.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensagem: "Erro ao buscar categorias",
+      erro: error.message
+    });
+  }
+});
+
+server.post('/api/categorias',
+  body('nome.pt-br').notEmpty().withMessage('Nome em português é obrigatório').isString().withMessage('Nome em português deve ser uma string'),
+  body('nome.en-us').notEmpty().withMessage('Nome em inglês é obrigatório').isString().withMessage('Nome em inglês deve ser uma string'),
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        mensagem: "Erro de validação",
+        erros: errors.array()
+      });
+    }
+
+    try {
+      const c = await db.collection('categorias').add(req.body);
+
+      res.status(201).json({
+        mensagem: "Categoria adicionada com sucesso!",
+        dados: {
+          id: c.id
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        mensagem: "Erro ao adicionar categoria",
+        erro: error.message
+      });
+    }
+  }
+);
+
+server.put('/api/categorias/:id',
+  param('id').notEmpty().withMessage('ID da categoria é obrigatório').isString().withMessage('ID da categoria deve ser uma string'),
+  body('nome.pt-br').notEmpty().withMessage('Nome em português é obrigatório').isString().withMessage('Nome em português deve ser uma string'),
+  body('nome.en-us').notEmpty().withMessage('Nome em inglês é obrigatório').isString().withMessage('Nome em inglês deve ser uma string'),
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        mensagem: "Erro de validação",
+        erros: errors.array()
+      });
+    }
+
+    const { id } = req.params;
+
+    try {
+      const categoria = await db.collection('categorias').doc(id).get();
+
+      if (!categoria.exists) {
+        return res.status(404).json({
+          mensagem: "Categoria não encontrada"
+        });
+      }
+
+      await categoria.ref.update(req.body);
+
+      res.status(200).json({
+        mensagem: "Categoria atualizada com sucesso!"
+      });
+    } catch (error) {
+      res.status(500).json({
+        mensagem: "Erro ao atualizar categoria",
+        erro: error.message
+      });
+    }
+  }
+);
+
+server.delete('/api/categorias/:id',
+  param('id').notEmpty().withMessage('ID da categoria é obrigatório').isString().withMessage('ID da categoria deve ser uma string'),
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        mensagem: "Erro de validação",
+        erros: errors.array()
+      });
+    }
+
+    const { id } = req.params;
+
+    try {
+      const categoria = await db.collection('categorias').doc(id).get();
+
+      if (!categoria.exists) {
+        return res.status(404).json({
+          mensagem: "Categoria não encontrada"
+        });
+      }
+
+      await categoria.ref.delete();
+
+      res.status(200).json({
+        mensagem: "Categoria removida com sucesso!"
+      });
+    } catch (error) {
+      res.status(500).json({
+        mensagem: "Erro ao remover categoria",
         erro: error.message
       });
     }
