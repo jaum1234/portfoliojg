@@ -41,6 +41,23 @@ server.post('/api/videos',
   }
 );
 
+server.put('/api/videos/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await db.collection('videos').doc(id).update(req.body);
+
+    return res.status(200).json({
+      mensagem: "Vídeo atualizado com sucesso!"
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensagem: "Erro ao atualizar vídeo",
+      erro: error.message
+    });
+  }
+});
+
 server.get('/api/categorias', (req, res) => {
 
 });
