@@ -1,7 +1,7 @@
 import server from "./server.js";
 import "dotenv/config";
 import db from './database.js';
-import { body, validationResult } from 'express-validator'
+import { param, body, validationResult } from 'express-validator'
 
 server.get('/api/videos', async (req, res) => {
   const videos = await db.collection('videos').get();
@@ -83,13 +83,43 @@ server.put('/api/videos/:id',
     }
 });
 
-server.get('/api/categorias', (req, res) => {
+server.delete('/api/videos/:id', 
+  param('id').isString().withMessage('ID do vídeo deve ser uma string').notEmpty().withMessage('ID do vídeo é obrigatório'),
+    async (req, res) => {
 
-});
+    const errors = validationResult(req);
 
-server.post('/api/categorias', (req, res) => {
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        mensagem: "Erro de validação",
+        erros: errors.array()
+      });
+    }
 
-});
+    const { id } = req.params;
+
+    try {
+      const video = await db.collection('videos').doc(id).get();
+
+      if (!video.exists) {
+        return res.status(404).json({
+          mensagem: "Vídeo não encontrado"
+        });
+      }
+
+      await video.ref.delete();
+
+      return res.status(200).json({
+        mensagem: "Vídeo removido com sucesso!"
+      });
+    } catch (error) {
+      res.status(500).json({
+        mensagem: "Erro ao remover vídeo",
+        erro: error.message
+      });
+    }
+  }
+);
 
 server.listen(process.env.APP_PORT, () => {
   console.log(`Server is running on port ${process.env.APP_PORT}`);
