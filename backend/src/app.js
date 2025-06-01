@@ -23,7 +23,7 @@ server.post('/api/videos',
   body('url_video').notEmpty().withMessage('URL do vídeo é obrigatória').isString().withMessage('URL do vídeo deve ser uma string').isURL().withMessage('URL do vídeo deve ser válida'),
   body('url_miniatura').notEmpty().withMessage('URL da miniatura é obrigatória').isString().withMessage('URL da miniatura deve ser uma string').isURL().withMessage('URL da miniatura deve ser válida'),
   body('categoriaId').notEmpty().withMessage('Categoria é obrigatória').isString().withMessage('Categoria deve ser uma string'),
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -33,10 +33,13 @@ server.post('/api/videos',
       });
     }
 
-    db.collection('videos').add(req.body)
+    const v = await db.collection('videos').add(req.body)
 
     res.status(201).json({
-      mensagem: "Vídeo adicionado com sucesso!"
+      mensagem: "Vídeo adicionado com sucesso!",
+      dados: {
+        id: v.id
+      }
     });
   }
 );
@@ -154,10 +157,13 @@ server.post('/api/categorias',
     }
 
     try {
-      await db.collection('categorias').add(req.body);
+      const c = await db.collection('categorias').add(req.body);
 
       res.status(201).json({
-        mensagem: "Categoria adicionada com sucesso!"
+        mensagem: "Categoria adicionada com sucesso!",
+        dados: {
+          id: c.id
+        }
       });
     } catch (error) {
       res.status(500).json({
