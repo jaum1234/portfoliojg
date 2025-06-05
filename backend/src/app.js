@@ -1,7 +1,21 @@
 import server from "./server.js";
 import "dotenv/config";
 import db from './database.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { param, body, validationResult } from 'express-validator'
+import auth0 from "express-openid-connect";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+server.get('/', (req, res) => {
+  res.redirect('/admin');
+});
+
+server.get('/admin', auth0.requiresAuth(), (req, res) => {
+  res.sendFile(path.join(__dirname, '../admin.html'))
+});
 
 server.get('/api/videos', async (req, res) => {
   const videos = await db.collection('videos').get();
@@ -23,6 +37,7 @@ server.post('/api/videos',
   body('url_video').notEmpty().withMessage('URL do vídeo é obrigatória').isString().withMessage('URL do vídeo deve ser uma string').isURL().withMessage('URL do vídeo deve ser válida'),
   body('url_miniatura').notEmpty().withMessage('URL da miniatura é obrigatória').isString().withMessage('URL da miniatura deve ser uma string').isURL().withMessage('URL da miniatura deve ser válida'),
   body('categoriaId').notEmpty().withMessage('Categoria é obrigatória').isString().withMessage('Categoria deve ser uma string'),
+  auth0.requiresAuth(),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -52,6 +67,7 @@ server.put('/api/videos/:id',
   body('url_video').notEmpty().withMessage('URL do vídeo é obrigatória').isString().withMessage('URL do vídeo deve ser uma string').isURL().withMessage('URL do vídeo deve ser válida'),
   body('url_miniatura').notEmpty().withMessage('URL da miniatura é obrigatória').isString().withMessage('URL da miniatura deve ser uma string').isURL().withMessage('URL da miniatura deve ser válida'),
   body('categoriaId').notEmpty().withMessage('Categoria é obrigatória').isString().withMessage('Categoria deve ser uma string'),  
+  auth0.requiresAuth(),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -86,9 +102,10 @@ server.put('/api/videos/:id',
     }
 });
 
-server.delete('/api/videos/:id', 
+server.delete('/api/videos/:id',
   param('id').isString().withMessage('ID do vídeo deve ser uma string').notEmpty().withMessage('ID do vídeo é obrigatório'),
-    async (req, res) => {
+  auth0.requiresAuth(),  
+  async (req, res) => {
 
     const errors = validationResult(req);
 
@@ -146,6 +163,7 @@ server.get('/api/categorias', async (req, res) => {
 server.post('/api/categorias',
   body('nome.pt-br').notEmpty().withMessage('Nome em português é obrigatório').isString().withMessage('Nome em português deve ser uma string'),
   body('nome.en-us').notEmpty().withMessage('Nome em inglês é obrigatório').isString().withMessage('Nome em inglês deve ser uma string'),
+  auth0.requiresAuth(),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -178,6 +196,7 @@ server.put('/api/categorias/:id',
   param('id').notEmpty().withMessage('ID da categoria é obrigatório').isString().withMessage('ID da categoria deve ser uma string'),
   body('nome.pt-br').notEmpty().withMessage('Nome em português é obrigatório').isString().withMessage('Nome em português deve ser uma string'),
   body('nome.en-us').notEmpty().withMessage('Nome em inglês é obrigatório').isString().withMessage('Nome em inglês deve ser uma string'),
+  auth0.requiresAuth(),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -215,6 +234,7 @@ server.put('/api/categorias/:id',
 
 server.delete('/api/categorias/:id',
   param('id').notEmpty().withMessage('ID da categoria é obrigatório').isString().withMessage('ID da categoria deve ser uma string'),
+  auth0.requiresAuth(),
   async (req, res) => {
     const errors = validationResult(req);
 

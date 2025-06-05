@@ -199,35 +199,7 @@
     </style>
 </head>
 <body>
-    <div id="login-page">
-        <div class="login-container">
-            <h2 class="lang-pt">Login Administrativo</h2>
-            <h2 class="lang-en">Admin Login</h2>
-            
-            <div class="notification" id="login-notification"></div>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="username" class="lang-pt">Nome de Utilizador</label>
-                    <label for="username" class="lang-en">Username</label>
-                    <input type="text" id="username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password" class="lang-pt">Senha</label>
-                    <label for="password" class="lang-en">Password</label>
-                    <input type="password" id="password" required>
-                </div>
-                
-                <button type="submit" class="btn">
-                    <span class="lang-pt">Entrar</span>
-                    <span class="lang-en">Login</span>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="admin-page" style="display: none;">
+    <div id="admin-page">
         <header>
             <div class="container">
                 <div class="logo">Portfólio JG - Admin</div>
@@ -454,17 +426,10 @@
 
     <script src="js/data.js"></script>
     <script>
-        // Configurações de autenticação
-        const adminCredentials = {
-            username: 'admin',
-            password: 'portfoliojg2025'
-        };
-        
-        // Estado da aplicação
         let currentLanguage = 'pt';
         let isDarkTheme = false;
-        let videosData = [...videos];
-        let categoriesData = [...categories];
+        let videosData = [];
+        let categoriesData = [];
         let editingVideoId = null;
         let editingCategoryId = null;
         
@@ -524,23 +489,8 @@
             populateCategorySelect();
         });
         
-        // Autenticação
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (username === adminCredentials.username && password === adminCredentials.password) {
-                localStorage.setItem('adminLoggedIn', 'true');
-                showAdminPage();
-            } else {
-                showNotification(loginNotification, 'Credenciais inválidas. Tente novamente.', 'Invalid credentials. Try again.', 'error');
-            }
-        });
-        
         logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('adminLoggedIn');
-            showLoginPage();
+            window.location.href = '/logout';
         });
         
         // Navegação entre seções
