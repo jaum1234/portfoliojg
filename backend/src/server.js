@@ -19,7 +19,7 @@ const config = {
 }
 
 app.use(auth(config))
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 
 export default app;
