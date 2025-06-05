@@ -14,7 +14,7 @@ server.get('/', (req, res) => {
 });
 
 server.get('/admin', auth0.requiresAuth(), (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin.html'))
+  res.sendFile(path.join(__dirname, '../public/admin.html'))
 });
 
 server.get('/api/videos', async (req, res) => {

@@ -1,30 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicialização
     let currentLanguage = 'pt';
     let currentCategory = 'all';
     let isDarkTheme = false;
     
-    // Elementos DOM
     const videoGrid = document.getElementById('video-grid');
     const modal = document.getElementById('video-modal');
     const modalVideoContainer = document.getElementById('modal-video-container');
     const modalTitle = document.getElementById('modal-video-title');
     const modalDescription = document.getElementById('modal-video-description');
     const closeModal = document.querySelector('.close-modal');
-    const contactForm = document.getElementById('contact-form');
-    
-    // Botões de idioma
+
     const ptBtn = document.getElementById('pt-btn');
     const enBtn = document.getElementById('en-btn');
     
-    // Botão de tema
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     const themeIcon = themeToggleBtn.querySelector('i');
     
-    // Botões de categoria
     const categoryBtns = document.querySelectorAll('.category-btn');
     
-    // Carregar vídeos
     function loadVideos(category = 'all') {
         videoGrid.innerHTML = '';
         
@@ -55,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Abrir modal de vídeo
     function openVideoModal(video) {
         modalVideoContainer.innerHTML = `
             <iframe 
@@ -74,19 +66,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'hidden';
     }
     
-    // Fechar modal de vídeo
     function closeVideoModal() {
         modal.style.display = 'none';
         modalVideoContainer.innerHTML = '';
         document.body.style.overflow = 'auto';
     }
     
-    // Alternar idioma
     function setLanguage(lang) {
         currentLanguage = lang;
         document.body.setAttribute('data-language', lang);
         
-        // Atualizar botões de idioma
         if (lang === 'pt') {
             ptBtn.classList.add('active');
             enBtn.classList.remove('active');
@@ -95,11 +84,9 @@ document.addEventListener('DOMContentLoaded', function() {
             ptBtn.classList.remove('active');
         }
         
-        // Recarregar vídeos com o novo idioma
         loadVideos(currentCategory);
     }
     
-    // Alternar tema
     function toggleTheme() {
         isDarkTheme = !isDarkTheme;
         
@@ -112,11 +99,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Filtrar por categoria
     function filterByCategory(category) {
         currentCategory = category;
         
-        // Atualizar botões de categoria
         categoryBtns.forEach(btn => {
             if (btn.dataset.category === category) {
                 btn.classList.add('active');
@@ -125,11 +110,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Recarregar vídeos com a nova categoria
         loadVideos(category);
     }
     
-    // Event Listeners
     ptBtn.addEventListener('click', () => setLanguage('pt'));
     enBtn.addEventListener('click', () => setLanguage('en'));
     
@@ -147,24 +130,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Formulário de contato
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-                        
-            // Simulação de envio bem-sucedido
-            alert(currentLanguage === 'pt' ? 
-                'Mensagem enviada com sucesso! Entraremos em contato em breve.' : 
-                'Message sent successfully! We will contact you soon.');
-            
-            contactForm.reset();
-        });
-    }
-    
-    // Inicialização
     loadVideos();
 });
