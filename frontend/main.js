@@ -3,13 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentCategory = 'all';
     let isDarkTheme = false;
     
-    const videoGrid = document.getElementById('video-grid');
-    const modal = document.getElementById('video-modal');
-    const modalVideoContainer = document.getElementById('modal-video-container');
-    const modalTitle = document.getElementById('modal-video-title');
-    const modalDescription = document.getElementById('modal-video-description');
-    const closeModal = document.querySelector('.close-modal');
-
     const ptBtn = document.getElementById('pt-btn');
     const enBtn = document.getElementById('en-btn');
     
@@ -17,59 +10,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeIcon = themeToggleBtn.querySelector('i');
     
     const categoryBtns = document.querySelectorAll('.category-btn');
+
+    document.querySelectorAll('.video-card').forEach(card => {
+        card.addEventListener('click', () => {
+            openVideoModal(card.getAttribute('data-id'));
+        });
+    });
+
+    document.querySelectorAll('[data-modal]').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeVideoModal(modal);
+            }
+        });
+        modal.querySelector('.close-modal').addEventListener('click', () => {
+            closeVideoModal(modal);
+        });
+    });
     
     function loadVideos(category = 'all') {
-        videoGrid.innerHTML = '';
-        
-        const filteredVideos = category === 'all' 
-            ? videos 
-            : videos.filter(video => video.category === category);
-        
-        filteredVideos.forEach(video => {
-            const videoCard = document.createElement('div');
-            videoCard.className = 'video-card';
-            videoCard.dataset.id = video.id;
-            
-            videoCard.innerHTML = `
-                <div class="video-thumbnail">
-                    <img src="${video.thumbnail}" alt="${video.title[currentLanguage]}">
-                    <div class="play-icon">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-                <div class="video-info">
-                    <h3>${video.title[currentLanguage]}</h3>
-                    <p>${video.description[currentLanguage].substring(0, 100)}...</p>
-                </div>
-            `;
-            
-            videoCard.addEventListener('click', () => openVideoModal(video));
-            videoGrid.appendChild(videoCard);
+        document.querySelectorAll('.video-card').forEach(card => {
+            if (category === 'all' || card.getAttribute('data-category') === category) {
+                card.style.display = 'block';
+                return;
+            }
+
+            card.style.display = 'none';
         });
     }
     
-    function openVideoModal(video) {
-        modalVideoContainer.innerHTML = `
-            <iframe 
-                src="${video.videoUrl}" 
-                title="${video.title[currentLanguage]}" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
-        `;
-        
-        modalTitle.textContent = video.title[currentLanguage];
-        modalDescription.textContent = video.description[currentLanguage];
-        
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+    function openVideoModal(id) {
+        document.querySelector(`div[data-modal][data-video-id=${id}`).style.display = 'block';
     }
     
-    function closeVideoModal() {
-        modal.style.display = 'none';
-        modalVideoContainer.innerHTML = '';
-        document.body.style.overflow = 'auto';
+    function closeVideoModal(modal) {
+        modal.style.display = 'none'
+        const idVideo = modal.getAttribute('data-video-id');
+        document.querySelector(`[id=modal-video-container-${idVideo}]`).innerHTML = '';
     }
     
     function setLanguage(lang) {
@@ -120,15 +97,5 @@ document.addEventListener('DOMContentLoaded', function() {
     
     categoryBtns.forEach(btn => {
         btn.addEventListener('click', () => filterByCategory(btn.dataset.category));
-    });
-    
-    closeModal.addEventListener('click', closeVideoModal);
-    
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeVideoModal();
-        }
-    });
-    
-    loadVideos();
+    });    
 });
