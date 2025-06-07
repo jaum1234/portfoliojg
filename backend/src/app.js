@@ -13,6 +13,10 @@ server.get('/', (req, res) => {
   res.redirect('/admin');
 });
 
+server.get('/callback', (req, res) => {
+  res.redirect('/admin');
+});
+
 server.get('/admin', auth0.requiresAuth(), (req, res) => {
   res.sendFile(path.join(__dirname, '../public/admin.html'))
 });
