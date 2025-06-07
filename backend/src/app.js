@@ -289,7 +289,11 @@ server.delete('/api/categorias/:id',
 );
 
 server.use(async (req, res, next) => {
+  console.log(`Recebendo requisição: ${req.method} ${req.originalUrl}`);
+
   if (['POST', 'PUT', 'DELETE'].includes(req.method) && process.env.NODE_ENV === 'production') {
+    console.log("Disparando deploy hook...");
+
     const hook = process.env.FRONTEND_DEPLOY_HOOK;
 
     if (hook) {
