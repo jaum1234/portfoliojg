@@ -9,6 +9,12 @@ import auth0 from "express-openid-connect";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+server.get('/logout', (req, res) => {
+  res.oidc.logout({
+    returnTo: process.env.FRONTEND_URL
+  });
+});
+
 server.get('/', (req, res) => {
   res.redirect('/admin');
 });
