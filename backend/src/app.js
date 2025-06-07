@@ -35,6 +35,21 @@ server.get('/admin', auth0.requiresAuth(), (req, res) => {
   res.sendFile(path.join(__dirname, '../public/admin.html'))
 });
 
+server.post('/api/atualizar-site', auth0.requiresAuth(), (req, res) => {
+  const hook = process.env.FRONTEND_DEPLOY_HOOK;
+
+  if (hook) {
+    fetch(hook)
+      .catch(error => {
+        console.error("Erro ao disparar o deploy hook:", error);
+      });
+  }
+
+  res.status(200).json({
+    mensagem: "Site atualizado com sucesso!"
+  });
+});
+
 server.get('/api/videos', async (req, res) => {
   const videos = await db.collection('videos').get();
 
@@ -288,24 +303,6 @@ server.delete('/api/categorias/:id',
   }
 );
 
-server.use(async (req, res, next) => {
-  console.log(`Recebendo requisição: ${req.method} ${req.originalUrl}`);
-
-  if (['POST', 'PUT', 'DELETE'].includes(req.method) && process.env.NODE_ENV === 'production') {
-    console.log("Disparando deploy hook...");
-
-    const hook = process.env.FRONTEND_DEPLOY_HOOK;
-
-    if (hook) {
-      fetch(hook)
-        .catch(error => {
-          console.error("Erro ao disparar o deploy hook:", error);
-        });
-    }
-  }
-  
-  next();
-});
 
 server.listen(process.env.APP_PORT, () => {
   console.log(`Server is running on port ${process.env.APP_PORT}`);

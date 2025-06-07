@@ -224,6 +224,12 @@ categoryForm.addEventListener('submit', async (e) => {
     resetCategoryForm();
 });
 
+function atualizarSite() {
+    fetch('/api/atualizar-site', {
+        method: 'POST'
+    });
+}
+
 function handleError(err) {
     if (!Array.isArray(err.erros)) {
         const p = document.createElement('p');
