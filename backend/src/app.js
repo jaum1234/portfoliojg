@@ -270,6 +270,21 @@ server.delete('/api/categorias/:id',
   }
 );
 
+server.use(async (req, res, next) => {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method) && process.env.NODE_ENV === 'production') {
+    const hook = process.env.FRONTEND_DEPLOY_HOOK;
+
+    if (hook) {
+      fetch(hook)
+        .catch(error => {
+          console.error("Erro ao disparar o deploy hook:", error);
+        });
+    }
+  }
+  
+  next();
+});
+
 server.listen(process.env.APP_PORT, () => {
   console.log(`Server is running on port ${process.env.APP_PORT}`);
 })
