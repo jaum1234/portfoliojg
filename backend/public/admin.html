@@ -23,8 +23,8 @@
                         </button>
                     </div>
                     <button id="logout-btn" class="btn">
-                        <span class="lang-pt">Sair</span>
-                        <span class="lang-en">Logout</span>
+                        <span class="lang-pt-br">Sair</span>
+                        <span class="lang-en-us">Logout</span>
                     </button>
                 </nav>
             </div>
@@ -32,94 +32,94 @@
 
         <main class="admin-container">
             <div class="admin-header">
-                <h1 class="lang-pt">Painel de Administração</h1>
-                <h1 class="lang-en">Administration Panel</h1>
+                <h1 class="lang-pt-br">Painel de Administração</h1>
+                <h1 class="lang-en-us">Administration Panel</h1>
             </div>
             
             <div class="notification" id="admin-notification"></div>
             
             <div class="admin-nav">
                 <button id="videos-nav" class="active">
-                    <span class="lang-pt">Vídeos</span>
-                    <span class="lang-en">Videos</span>
+                    <span class="lang-pt-br">Vídeos</span>
+                    <span class="lang-en-us">Videos</span>
                 </button>
                 <button id="categories-nav">
-                    <span class="lang-pt">Categorias</span>
-                    <span class="lang-en">Categories</span>
+                    <span class="lang-pt-br">Categorias</span>
+                    <span class="lang-en-us">Categories</span>
                 </button>
             </div>
             
             <section id="videos-section" class="admin-section active">
-                <h2 class="lang-pt">Gestão de Vídeos</h2>
-                <h2 class="lang-en">Video Management</h2>
+                <h2 class="lang-pt-br">Gestão de Vídeos</h2>
+                <h2 class="lang-en-us">Video Management</h2>
                 
                 <form id="video-form" class="admin-form">
-                    <h3 class="lang-pt">Adicionar/Editar Vídeo</h3>
-                    <h3 class="lang-en">Add/Edit Video</h3>
+                    <h3 class="lang-pt-br">Adicionar/Editar Vídeo</h3>
+                    <h3 class="lang-en-us">Add/Edit Video</h3>
                     
                     <input type="hidden" id="video-id">
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="video-title-pt" class="lang-pt">Título (Português)</label>
-                            <label for="video-title-pt" class="lang-en">Title (Portuguese)</label>
+                            <label for="video-title-pt" class="lang-pt-br">Título (Português)</label>
+                            <label for="video-title-pt" class="lang-en-us">Title (Portuguese)</label>
                             <input type="text" id="video-title-pt" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="video-title-en" class="lang-pt">Título (Inglês)</label>
-                            <label for="video-title-en" class="lang-en">Title (English)</label>
+                            <label for="video-title-en" class="lang-pt-br">Título (Inglês)</label>
+                            <label for="video-title-en" class="lang-en-us">Title (English)</label>
                             <input type="text" id="video-title-en" required>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="video-desc-pt" class="lang-pt">Descrição (Português)</label>
-                            <label for="video-desc-pt" class="lang-en">Description (Portuguese)</label>
+                            <label for="video-desc-pt" class="lang-pt-br">Descrição (Português)</label>
+                            <label for="video-desc-pt" class="lang-en-us">Description (Portuguese)</label>
                             <textarea id="video-desc-pt" required></textarea>
                         </div>
                         
                         <div class="form-group">
-                            <label for="video-desc-en" class="lang-pt">Descrição (Inglês)</label>
-                            <label for="video-desc-en" class="lang-en">Description (English)</label>
+                            <label for="video-desc-en" class="lang-pt-br">Descrição (Inglês)</label>
+                            <label for="video-desc-en" class="lang-en-us">Description (English)</label>
                             <textarea id="video-desc-en" required></textarea>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="video-thumbnail" class="lang-pt">URL da Miniatura</label>
-                            <label for="video-thumbnail" class="lang-en">Thumbnail URL</label>
+                            <label for="video-thumbnail" class="lang-pt-br">URL da Miniatura</label>
+                            <label for="video-thumbnail" class="lang-en-us">Thumbnail URL</label>
                             <input type="url" id="video-thumbnail" required>
                             <img id="thumbnail-preview" class="thumbnail-preview">
                         </div>
                         
                         <div class="form-group">
-                            <label for="video-url" class="lang-pt">URL do Vídeo</label>
-                            <label for="video-url" class="lang-en">Video URL</label>
+                            <label for="video-url" class="lang-pt-br">URL do Vídeo</label>
+                            <label for="video-url" class="lang-en-us">Video URL</label>
                             <input type="url" id="video-url" required>
-                            <small class="lang-pt">URL do YouTube ou Google Drive</small>
-                            <small class="lang-en">YouTube or Google Drive URL</small>
+                            <small class="lang-pt-br">URL do YouTube ou Google Drive</small>
+                            <small class="lang-en-us">YouTube or Google Drive URL</small>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="video-category" class="lang-pt">Categoria</label>
-                            <label for="video-category" class="lang-en">Category</label>
+                            <label for="video-category" class="lang-pt-br">Categoria</label>
+                            <label for="video-category" class="lang-en-us">Category</label>
                             <select id="video-category" required></select>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <button type="submit" class="btn">
-                            <span class="lang-pt">Salvar Vídeo</span>
-                            <span class="lang-en">Save Video</span>
+                            <span class="lang-pt-br">Salvar Vídeo</span>
+                            <span class="lang-en-us">Save Video</span>
                         </button>
                         <button type="button" id="cancel-video" class="btn">
-                            <span class="lang-pt">Cancelar</span>
-                            <span class="lang-en">Cancel</span>
+                            <span class="lang-pt-br">Cancelar</span>
+                            <span class="lang-en-us">Cancel</span>
                         </button>
                     </div>
                 </form>
@@ -127,14 +127,14 @@
                 <table class="admin-table" id="videos-table">
                     <thead>
                         <tr>
-                            <th class="lang-pt">Título</th>
-                            <th class="lang-en">Title</th>
-                            <th class="lang-pt">Miniatura</th>
-                            <th class="lang-en">Thumbnail</th>
-                            <th class="lang-pt">Categoria</th>
-                            <th class="lang-en">Category</th>
-                            <th class="lang-pt">Ações</th>
-                            <th class="lang-en">Actions</th>
+                            <th class="lang-pt-br">Título</th>
+                            <th class="lang-en-us">Title</th>
+                            <th class="lang-pt-br">Miniatura</th>
+                            <th class="lang-en-us">Thumbnail</th>
+                            <th class="lang-pt-br">Categoria</th>
+                            <th class="lang-en-us">Category</th>
+                            <th class="lang-pt-br">Ações</th>
+                            <th class="lang-en-us">Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -142,47 +142,38 @@
             </section>
             
             <section id="categories-section" class="admin-section">
-                <h2 class="lang-pt">Gestão de Categorias</h2>
-                <h2 class="lang-en">Category Management</h2>
+                <h2 class="lang-pt-br">Gestão de Categorias</h2>
+                <h2 class="lang-en-us">Category Management</h2>
                 
                 <form id="category-form" class="admin-form">
-                    <h3 class="lang-pt">Adicionar/Editar Categoria</h3>
-                    <h3 class="lang-en">Add/Edit Category</h3>
+                    <h3 class="lang-pt-br">Adicionar/Editar Categoria</h3>
+                    <h3 class="lang-en-us">Add/Edit Category</h3>
                     
                     <input type="hidden" id="category-id-hidden">
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="category-id" class="lang-pt">ID da Categoria</label>
-                            <label for="category-id" class="lang-en">Category ID</label>
-                            <input type="text" id="category-id" required>
-                            <small class="lang-pt">Identificador único (sem espaços, apenas letras e números)</small>
-                            <small class="lang-en">Unique identifier (no spaces, only letters and numbers)</small>
-                        </div>
-                    </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="category-name-pt" class="lang-pt">Nome (Português)</label>
-                            <label for="category-name-pt" class="lang-en">Name (Portuguese)</label>
+                            <label for="category-name-pt" class="lang-pt-br">Nome (Português)</label>
+                            <label for="category-name-pt" class="lang-en-us">Name (Portuguese)</label>
                             <input type="text" id="category-name-pt" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="category-name-en" class="lang-pt">Nome (Inglês)</label>
-                            <label for="category-name-en" class="lang-en">Name (English)</label>
+                            <label for="category-name-en" class="lang-pt-br">Nome (Inglês)</label>
+                            <label for="category-name-en" class="lang-en-us">Name (English)</label>
                             <input type="text" id="category-name-en" required>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <button type="submit" class="btn">
-                            <span class="lang-pt">Salvar Categoria</span>
-                            <span class="lang-en">Save Category</span>
+                            <span class="lang-pt-br">Salvar Categoria</span>
+                            <span class="lang-en-us">Save Category</span>
                         </button>
                         <button type="button" id="cancel-category" class="btn">
-                            <span class="lang-pt">Cancelar</span>
-                            <span class="lang-en">Cancel</span>
+                            <span class="lang-pt-br">Cancelar</span>
+                            <span class="lang-en-us">Cancel</span>
                         </button>
                     </div>
                 </form>
@@ -191,12 +182,12 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th class="lang-pt">Nome (PT)</th>
-                            <th class="lang-en">Name (PT)</th>
-                            <th class="lang-pt">Nome (EN)</th>
-                            <th class="lang-en">Name (EN)</th>
-                            <th class="lang-pt">Ações</th>
-                            <th class="lang-en">Actions</th>
+                            <th class="lang-pt-br">Nome (PT)</th>
+                            <th class="lang-en-us">Name (PT)</th>
+                            <th class="lang-pt-br">Nome (EN)</th>
+                            <th class="lang-en-us">Name (EN)</th>
+                            <th class="lang-pt-br">Ações</th>
+                            <th class="lang-en-us">Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

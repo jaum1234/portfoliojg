@@ -1,4 +1,4 @@
-let currentLanguage = 'pt';
+let currentLanguage = 'pt-br';
 let isDarkTheme = false;
 let videosData = [];
 let categoriesData = [];
@@ -23,7 +23,7 @@ const ptBtn = document.getElementById('pt-btn');
 const enBtn = document.getElementById('en-btn');
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedLanguage) {
         setLanguage(savedLanguage);
     } else {
-        setLanguage('pt');
+        setLanguage('pt-br');
     }
 
-    loadData();
+    await loadData();
 
     renderVideosTable();
     renderCategoriesTable();
@@ -65,11 +65,11 @@ categoriesNav.addEventListener('click', () => {
 });
 
 ptBtn.addEventListener('click', () => {
-    setLanguage('pt');
+    setLanguage('pt-br');
 });
 
 enBtn.addEventListener('click', () => {
-    setLanguage('en');
+    setLanguage('en-us');
 });
 
 themeToggleBtn.addEventListener('click', () => {
@@ -79,85 +79,167 @@ themeToggleBtn.addEventListener('click', () => {
     updateThemeIcon();
 });
 
-videoForm.addEventListener('submit', (e) => {
+videoForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const videoData = {
-        id: document.getElementById('video-id').value || generateId(),
-        title: {
-            pt: document.getElementById('video-title-pt').value,
-            en: document.getElementById('video-title-en').value
+        titulo: {
+            ['pt-br']: document.getElementById('video-title-pt').value,
+            ['en-us']: document.getElementById('video-title-en').value
         },
-        description: {
-            pt: document.getElementById('video-desc-pt').value,
-            en: document.getElementById('video-desc-en').value
+        descricao: {
+            ['pt-br']: document.getElementById('video-desc-pt').value,
+            ['en-us']: document.getElementById('video-desc-en').value
         },
-        thumbnail: document.getElementById('video-thumbnail').value,
-        videoUrl: document.getElementById('video-url').value,
-        category: document.getElementById('video-category').value
+        url_miniatura: document.getElementById('video-thumbnail').value,
+        url_video: document.getElementById('video-url').value,
+        categoriaId: document.getElementById('video-category').value
     };
+
     
     if (editingVideoId) {
+        console.log(videoData);
         const index = videosData.findIndex(v => v.id == editingVideoId);
         if (index !== -1) {
+            const response = await fetch(`/api/videos/${editingVideoId}`, {
+                method: 'PUT',
+                body: JSON.stringify(videoData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                handleError(await response.json());
+                return;
+            }
+
+            const data = await response.json();
+
             videosData[index] = videoData;
-            showNotification(adminNotification, 'Vídeo atualizado com sucesso!', 'Video updated successfully!', 'success');
+            videoData.id = editingVideoId;
+
+            const p = document.createElement('p');
+            p.textContent = data.mensagem;
+
+            showNotification(adminNotification, p, 'success');
         }
         editingVideoId = null;
     } else {
-        videosData.push(videoData);
-        showNotification(adminNotification, 'Vídeo adicionado com sucesso!', 'Video added successfully!', 'success');
+        const response = await fetch(`/api/videos`, {
+            method: 'POST',
+            body: JSON.stringify(videoData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            handleError(error);
+            return;
+        }
+
+        const newVideo = await response.json();
+
+        videosData.push({
+            ...videoData,
+            id: newVideo.id
+        });
+
+        const p = document.createElement('p');
+        p.textContent = newVideo.mensagem;
+
+        showNotification(adminNotification, p, 'success');
     }
     
-    saveData();
     renderVideosTable();
     resetVideoForm();
 });
 
-categoryForm.addEventListener('submit', (e) => {
+categoryForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const categoryId = document.getElementById('category-id').value;
-    
-    // Verificar se o ID já existe (exceto se estiver editando)
-    if (!editingCategoryId && categoriesData.some(c => c.id === categoryId)) {
-        showNotification(adminNotification, 'Este ID de categoria já existe!', 'This category ID already exists!', 'error');
-        return;
-    }
     
     const categoryData = {
-        id: categoryId,
-        name: {
-            pt: document.getElementById('category-name-pt').value,
-            en: document.getElementById('category-name-en').value
+        nome: {
+            "pt-br": document.getElementById('category-name-pt').value,
+            "en-us": document.getElementById('category-name-en').value
         }
     };
     
     if (editingCategoryId) {
         const index = categoriesData.findIndex(c => c.id === editingCategoryId);
         if (index !== -1) {
-            if (editingCategoryId !== categoryId) {
-                videosData.forEach(video => {
-                    if (video.category === editingCategoryId) {
-                        video.category = categoryId;
-                    }
-                });
+            const response = await fetch(`/api/categorias/${editingCategoryId}`, {
+                method: 'PUT',
+                body: JSON.stringify(categoryData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                handleError(await response.json());
+                return;
             }
+
+            categoryData.id = editingCategoryId;
             
             categoriesData[index] = categoryData;
-            showNotification(adminNotification, 'Categoria atualizada com sucesso!', 'Category updated successfully!', 'success');
+
+            const p = document.createElement('p');
+            p.textContent = (await response.json()).mensagem;
+
+            showNotification(adminNotification, p, 'success');
         }
         editingCategoryId = null;
     } else {
+        const response = await fetch(`/api/categorias`, {
+            method: 'POST',
+            body: JSON.stringify(categoryData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            handleError(await response.json());
+            return;
+        }
+
+        const newCategory = await response.json();
+        categoryData.id = newCategory.dados.id;
+
         categoriesData.push(categoryData);
-        showNotification(adminNotification, 'Categoria adicionada com sucesso!', 'Category added successfully!', 'success');
+
+        const p = document.createElement('p');
+        p.textContent = newCategory.mensagem;
+
+        showNotification(adminNotification, p, 'success');
     }
     
-    saveData();
     renderCategoriesTable();
     populateCategorySelect();
     resetCategoryForm();
 });
+
+function handleError(err) {
+    if (!Array.isArray(err.erros)) {
+        const p = document.createElement('p');
+        p.innerText = err.mensagem;
+        showNotification(adminNotification, p, 'error');
+        return;
+    }
+    
+    const ul = document.createElement('ul');
+    for (const erro of err.erros) {
+        const li = document.createElement('li');
+        ul.appendChild(li);
+        li.textContent = erro.msg;
+    }
+    showNotification(adminNotification, ul, 'error');
+}
 
 cancelVideoBtn.addEventListener('click', () => {
     resetVideoForm();
@@ -169,14 +251,15 @@ cancelCategoryBtn.addEventListener('click', () => {
 
 thumbnailInput.addEventListener('input', () => {
     const url = thumbnailInput.value;
+    console.log(url);
     if (url) {
         thumbnailPreview.src = url;
         thumbnailPreview.style.display = 'block';
         
-        // Verificar se a imagem carrega corretamente
-        thumbnailPreview.onerror = () => {
-            thumbnailPreview.style.display = 'none';
-        };
+        // // Verificar se a imagem carrega corretamente
+        // thumbnailPreview.onerror = () => {
+        //     thumbnailPreview.style.display = 'none';
+        // };
     } else {
         thumbnailPreview.style.display = 'none';
     }
@@ -186,7 +269,7 @@ function setLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('language', lang);
     
-    document.querySelectorAll('.lang-pt, .lang-en').forEach(el => {
+    document.querySelectorAll('.lang-pt-br, .lang-en-us').forEach(el => {
         el.style.display = 'none';
     });
     
@@ -194,9 +277,8 @@ function setLanguage(lang) {
         el.style.display = 'block';
     });
     
-    // Atualizar botões de idioma
-    ptBtn.classList.toggle('active', lang === 'pt');
-    enBtn.classList.toggle('active', lang === 'en');
+    ptBtn.classList.toggle('active', lang === 'pt-br');
+    enBtn.classList.toggle('active', lang === 'en-us');
 }
 
 function updateThemeIcon() {
@@ -210,28 +292,33 @@ function updateThemeIcon() {
     }
 }
 
-function showNotification(element, ptMessage, enMessage, type) {
-    element.textContent = currentLanguage === 'pt' ? ptMessage : enMessage;
+function showNotification(element, ptMessage, type) {
+    element.innerHTML = '';
+
+    element.appendChild(ptMessage);
     element.className = `notification ${type}`;
     element.style.display = 'block';
     
     setTimeout(() => {
         element.style.display = 'none';
-    }, 3000);
+        element.innerHTML = '';
+    }, 5000);
 }
 
 function renderVideosTable() {
     videosTable.innerHTML = '';
     
     videosData.forEach(video => {
+        console.log(video);
         const tr = document.createElement('tr');
         
         const titleTd = document.createElement('td');
-        titleTd.textContent = video.title[currentLanguage];
+
+        titleTd.textContent = video.titulo[currentLanguage];
         
         const thumbnailTd = document.createElement('td');
         const thumbnailImg = document.createElement('img');
-        thumbnailImg.src = video.thumbnail;
+        thumbnailImg.src = video.url_miniatura;
         thumbnailImg.style.width = '80px';
         thumbnailImg.style.height = '45px';
         thumbnailImg.style.objectFit = 'cover';
@@ -239,8 +326,8 @@ function renderVideosTable() {
         thumbnailTd.appendChild(thumbnailImg);
         
         const categoryTd = document.createElement('td');
-        const category = categoriesData.find(c => c.id === video.category);
-        categoryTd.textContent = category ? category.name[currentLanguage] : video.category;
+        const category = categoriesData.find(c => c.id === video.categoriaId);
+        categoryTd.textContent = category ? category.nome[currentLanguage] : video.categoriaId;
         
         const actionsTd = document.createElement('td');
         const editBtn = document.createElement('button');
@@ -267,7 +354,6 @@ function renderVideosTable() {
 
 function renderCategoriesTable() {
     categoriesTable.innerHTML = '';
-    
     categoriesData.forEach(category => {
         const tr = document.createElement('tr');
         
@@ -275,19 +361,21 @@ function renderCategoriesTable() {
         idTd.textContent = category.id;
         
         const namePtTd = document.createElement('td');
-        namePtTd.textContent = category.name.pt;
+        namePtTd.textContent = category.nome['pt-br'];
         
         const nameEnTd = document.createElement('td');
-        nameEnTd.textContent = category.name.en;
+        nameEnTd.textContent = category.nome['en-us'];
         
         const actionsTd = document.createElement('td');
         const editBtn = document.createElement('button');
         editBtn.className = 'btn-edit';
+        editBtn.setAttribute('data-id', category.id);
         editBtn.innerHTML = '<i class="fas fa-edit"></i>';
         editBtn.addEventListener('click', () => editCategory(category.id));
         
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'btn-delete';
+        deleteBtn.setAttribute('data-id', category.id);
         deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
         deleteBtn.addEventListener('click', () => deleteCategory(category.id));
         
@@ -306,11 +394,10 @@ function renderCategoriesTable() {
 function populateCategorySelect() {
     const select = document.getElementById('video-category');
     select.innerHTML = '';
-    
     categoriesData.forEach(category => {
         const option = document.createElement('option');
         option.value = category.id;
-        option.textContent = `${category.name.pt} / ${category.name.en}`;
+        option.textContent = `${category.nome['pt-br']} / ${category.nome['en-us']}`;
         select.appendChild(option);
     });
 }
@@ -319,31 +406,46 @@ function editVideo(id) {
     const video = videosData.find(v => v.id == id);
     if (!video) return;
     
+    console.log(video);
+
     document.getElementById('video-id').value = video.id;
-    document.getElementById('video-title-pt').value = video.title.pt;
-    document.getElementById('video-title-en').value = video.title.en;
-    document.getElementById('video-desc-pt').value = video.description.pt;
-    document.getElementById('video-desc-en').value = video.description.en;
-    document.getElementById('video-thumbnail').value = video.thumbnail;
-    document.getElementById('video-url').value = video.videoUrl;
-    document.getElementById('video-category').value = video.category;
+    document.getElementById('video-title-pt').value = video.titulo['pt-br'] || '';
+    document.getElementById('video-title-en').value = video.titulo['en-us'] || '';
+    document.getElementById('video-desc-pt').value = video.descricao['pt-br'] || '';
+    document.getElementById('video-desc-en').value = video.descricao['en-us'] || '';
+    document.getElementById('video-thumbnail').value = video.url_miniatura || '';
+    document.getElementById('video-url').value = video.url_video || '';
+    document.getElementById('video-category').value = video.categoriaId || '';
     
     // Mostrar pré-visualização da miniatura
-    thumbnailPreview.src = video.thumbnail;
+    thumbnailPreview.src = video.url_miniatura;
     thumbnailPreview.style.display = 'block';
-    
+
     editingVideoId = video.id;
-    
     // Rolar para o formulário
     videoForm.scrollIntoView({ behavior: 'smooth' });
 }
 
-function deleteVideo(id) {
-    if (confirm(currentLanguage === 'pt' ? 'Tem certeza que deseja excluir este vídeo?' : 'Are you sure you want to delete this video?')) {
+async function deleteVideo(id) {
+    if (confirm('Tem certeza que deseja excluir este vídeo?')) {
         videosData = videosData.filter(v => v.id != id);
-        saveData();
         renderVideosTable();
-        showNotification(adminNotification, 'Vídeo excluído com sucesso!', 'Video deleted successfully!', 'success');
+
+        const response = await fetch(`/api/videos/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            handleError(await response.json());
+            return;
+        }
+
+        const data = await response.json();
+
+        const p = document.createElement('p');
+        p.textContent = data.mensagem;
+
+        showNotification(adminNotification, p, 'success');
     }
 }
 
@@ -351,30 +453,15 @@ function editCategory(id) {
     const category = categoriesData.find(c => c.id === id);
     if (!category) return;
     
-    document.getElementById('category-id-hidden').value = category.id;
-    document.getElementById('category-id').value = category.id;
-    document.getElementById('category-name-pt').value = category.name.pt;
-    document.getElementById('category-name-en').value = category.name.en;
-    
-    // Desabilitar campo ID se houver vídeos usando esta categoria
-    const hasVideosUsingCategory = videosData.some(v => v.category === id);
-    document.getElementById('category-id').disabled = hasVideosUsingCategory;
-    
-    if (hasVideosUsingCategory) {
-        showNotification(adminNotification, 
-            'Esta categoria está sendo usada por vídeos. O ID não pode ser alterado.', 
-            'This category is being used by videos. ID cannot be changed.', 
-            'error');
-    }
-    
+    document.getElementById('category-name-pt').value = category.nome['pt-br'];
+    document.getElementById('category-name-en').value = category.nome['en-us'];
+        
     editingCategoryId = category.id;
     
-    // Rolar para o formulário
     categoryForm.scrollIntoView({ behavior: 'smooth' });
 }
 
-function deleteCategory(id) {
-    // Verificar se há vídeos usando esta categoria
+async function deleteCategory(id) {
     const hasVideosUsingCategory = videosData.some(v => v.category === id);
     
     if (hasVideosUsingCategory) {
@@ -385,12 +472,25 @@ function deleteCategory(id) {
         return;
     }
     
-    if (confirm(currentLanguage === 'pt' ? 'Tem certeza que deseja excluir esta categoria?' : 'Are you sure you want to delete this category?')) {
+    if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+        const response = await fetch(`/api/categorias/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            handleError(await response.json());
+            return;
+        }
+
         categoriesData = categoriesData.filter(c => c.id !== id);
-        saveData();
+        const data = await response.json();
+
         renderCategoriesTable();
         populateCategorySelect();
-        showNotification(adminNotification, 'Categoria excluída com sucesso!', 'Category deleted successfully!', 'success');
+
+        const p = document.createElement('p');
+        p.textContent = data.mensagem;
+        showNotification(adminNotification, p, 'success');
     }
 }
 
@@ -408,34 +508,19 @@ function resetCategoryForm() {
     editingCategoryId = null;
 }
 
-function generateId() {
-    return Date.now().toString();
-}
+async function loadData() {
 
-function loadData() {
-    const savedVideos = localStorage.getItem('adminVideos');
-    const savedCategories = localStorage.getItem('adminCategories');
-    
-    if (savedVideos) {
-        try {
-            videosData = JSON.parse(savedVideos);
-        } catch (e) {
-            console.error('Erro ao carregar vídeos:', e);
-        }
+    const videos = await fetch('/api/videos');
+    if (videos.ok) {
+        const data = await videos.json();
+        videosData = data.dados;
     }
     
-    if (savedCategories) {
-        try {
-            categoriesData = JSON.parse(savedCategories);
-        } catch (e) {
-            console.error('Erro ao carregar categorias:', e);
-        }
+    const categorias = await fetch('/api/categorias'); 
+    if (categorias.ok) {
+        const data = await categorias.json();
+        categoriesData = data.dados;
     }
-}
-
-function saveData() {
-    localStorage.setItem('adminVideos', JSON.stringify(videosData));
-    localStorage.setItem('adminCategories', JSON.stringify(categoriesData));
 }
 
 function generateDataJsContent() {

@@ -553,7 +553,8 @@ body[data-language="en"] .lang-en {
 }
 
 .notification {
-    padding: 15px;
+    list-style: none;
+    padding: 2rem;
     margin-bottom: 20px;
     border-radius: 4px;
     display: none;
