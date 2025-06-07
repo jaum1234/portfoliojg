@@ -15,6 +15,12 @@ server.get('/logout', (req, res) => {
   });
 });
 
+server.get('/login', (req, res) => {
+  res.oidc.login({
+    returnTo: '/admin',
+  });
+});
+
 server.get('/', (req, res) => {
   res.redirect('/admin');
 });
