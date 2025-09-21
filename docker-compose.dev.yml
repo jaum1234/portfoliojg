@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.development
     depends_on:
       - backend
 
@@ -23,4 +23,4 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./backend/.env
+      - ./backend/.env.development
