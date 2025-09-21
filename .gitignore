@@ -183,3 +183,13 @@ dist
 service-account.json
 
 _site
+
+# Development environment files
+.env
+frontend/.env
+backend/.env
+
+# Development logs
+*.log
+backend.log
+frontend.log

@@ -1,0 +1,35 @@
+{
+  "name": "portfoliojg",
+  "version": "1.0.0",
+  "description": "Personal portfolio website for video editing professional",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run start",
+    "build:frontend": "cd frontend && npm run build",
+    "start:backend": "cd backend && npm start",
+    "test": "cd backend && npm test && cd ../frontend && npm test",
+    "setup": "./setup-dev.sh",
+    "check": "./check-env.sh",
+    "clean": "rm -rf node_modules backend/node_modules frontend/node_modules && npm run install:all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaum1234/portfoliojg.git"
+  },
+  "keywords": [
+    "portfolio",
+    "video",
+    "eleventy",
+    "express",
+    "firebase",
+    "auth0"
+  ],
+  "author": "João Vítor de Souza Coura",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

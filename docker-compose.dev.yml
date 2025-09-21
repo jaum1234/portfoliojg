@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - APP_PORT=3000
+      - FRONTEND_URL=http://localhost:8080
+      - AUTH0_SECRET=${AUTH0_SECRET:-test_secret_key_for_development}
+      - AUTH0_BASE_URL=http://localhost:3000
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID:-test_client_id}
+      - AUTH0_ISSUER_BASE_URL=${AUTH0_ISSUER_BASE_URL:-https://test.auth0.com}
+      - FIREBASE_SERVICE_ACCOUNT_JSON=${FIREBASE_SERVICE_ACCOUNT_JSON:-{}}
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/package.json:/app/package.json
+    command: npm run dev
+    depends_on:
+      - firestore
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    environment:
+      - BACKEND_URL=http://backend:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run start
+    depends_on:
+      - backend
+
+  firestore:
+    image: google/cloud-sdk:alpine
+    command: gcloud emulators firestore start --host-port=0.0.0.0:8080
+    ports:
+      - "8081:8080"
+    environment:
+      - FIRESTORE_PROJECT_ID=demo-project
