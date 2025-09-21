@@ -10,8 +10,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 server.get('/logout', (req, res) => {
-  console.log(process.env.FRONTEND_URL);
-
   res.oidc.logout({
     returnTo: process.env.FRONTEND_URL
   });
