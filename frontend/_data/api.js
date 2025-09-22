@@ -1,7 +1,9 @@
 import fetch from "node-fetch";
-import "dotenv/config";
+import { config } from "dotenv";
 
 export default async function() {
+  config({ path: `.env.${process.env.NODE_ENV}` });
+
   const videos = await fetch(`${process.env.BACKEND_URL}/api/videos`);
   if (!videos.ok) throw new Error("Erro ao buscar vídeos da API");
   const videosData = await videos.json();
